@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createStore } from "redux";
-import { Grid, Row, Col, Badge } from "react-bootstrap";
 import { Provider } from "react-redux";
 
-import defaultReducer from "./reducers";
+import { Grid, Row, Col, Badge } from "react-bootstrap";
+
 import { MOVE, COUNT, PLAY, RESET, SHUFFLE } from "./actions";
+import defaultReducer from "./reducers";
 
 import Display from "./components/presentation/Display";
 import Button from "./components/containers/ButtonMove";
