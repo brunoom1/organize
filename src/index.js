@@ -24,6 +24,7 @@ class App extends React.Component {
     super(props);
 
     store.subscribe(() => {
+      console.log(store.getState().timer);
       this.forceUpdate();
     });
   }

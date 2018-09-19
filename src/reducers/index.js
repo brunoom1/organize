@@ -1,5 +1,12 @@
 import { combineReducers } from "redux";
-import { MOVE, COUNT, PLAY, RESET, SHUFFLE } from "./../actions";
+import {
+  MOVE,
+  COUNT,
+  PLAY,
+  RESET,
+  TIMER_START,
+  TIMER_STOP
+} from "./../actions";
 
 const defaultAppState = {
   grid: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [12, 13, 14, -1]],
@@ -48,6 +55,21 @@ const timer = (status = defaultAppState.timer, action) => {
       return Object.assign({}, status, {
         started: false,
         time: 0
+      });
+    case TIMER_START:
+      let processId = status.processId;
+      if (!processId) {
+        processId = setInterval(action.timerFuncCount, 1000);
+      }
+      return Object.assign({}, status, {
+        processId
+      });
+    case TIMER_STOP:
+      if (status.processId) {
+        clearInterval(status.processId);
+      }
+      return Object.assign({}, status, {
+        processId: null
       });
     default:
       return status;
