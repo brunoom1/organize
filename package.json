@@ -1,0 +1,28 @@
+{
+  "name": "simple-game-react-redux-play-ground",
+  "version": "1.0.0",
+  "description": "Create a simple with react and redux game for training ",
+  "keywords": [
+    "redux",
+    "react-bootstrap",
+    "training",
+    "react"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "prop-types": "15.6.2",
+    "react": "16.4.2",
+    "react-bootstrap": "0.32.4",
+    "react-dom": "16.4.2",
+    "react-redux": "5.0.7",
+    "react-scripts": "1.1.4",
+    "redux": "4.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
