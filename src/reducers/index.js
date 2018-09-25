@@ -5,11 +5,12 @@ import {
   PLAY,
   RESET,
   TIMER_START,
-  TIMER_STOP
+  TIMER_STOP,
+  PAUSE
 } from "./../actions";
 
 const defaultAppState = {
-  grid: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [12, 13, 14, -1]],
+  grid: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, -1]],
   timer: {
     time: 0,
     started: false,
@@ -17,8 +18,10 @@ const defaultAppState = {
   },
   game: {
     moviments: 0,
-    playing: false
-  }
+    playing: false,
+    paused: false
+  },
+  finished: false
 };
 
 const game = (status = defaultAppState.game, action) => {
@@ -36,6 +39,9 @@ const game = (status = defaultAppState.game, action) => {
         moviments: 0,
         playing: false
       });
+    case PAUSE:
+      return game_pause(status);
+
     default:
       return status;
   }
@@ -56,10 +62,19 @@ const timer = (status = defaultAppState.timer, action) => {
         started: false,
         time: 0
       });
+    case PAUSE:
+      if (status.processId) {
+        clearInterval(status.processId);
+      }
+      let objUpdated = Object.assign({}, status, {
+        started: false,
+        processId: null
+      });
+      return objUpdated;
     case TIMER_START:
       let processId = status.processId;
       if (!processId) {
-        processId = setInterval(action.timerFuncCount, 1000);
+        // processId = setInterval(action.timerFuncCount, 1000);
       }
       return Object.assign({}, status, {
         processId
@@ -79,9 +94,9 @@ const timer = (status = defaultAppState.timer, action) => {
 const grid = (grid = defaultAppState.grid, action) => {
   switch (action.type) {
     case PLAY:
-      return grid_shuffle(grid);
+      return action.grid;
     case MOVE:
-      return update_grid(grid, { row: action.row, col: action.col });
+      return [...action.grid.map(cols => [...cols])];
     case RESET:
       return defaultAppState.grid;
     default:
@@ -91,46 +106,16 @@ const grid = (grid = defaultAppState.grid, action) => {
 
 export default combineReducers({ grid, timer, game });
 
-function update_grid(grid, { row, col }) {
-  grid = grid.map(x => (x instanceof Array ? x.map(i => i) : x));
+function game_pause(status) {
+  ioStatus.save(status);
 
-  grid.forEach((line, lineIndex) => {
-    line.forEach((column, colIndex) => {
-      if (column === -1) {
-        let conds = [
-          Math.abs(colIndex - col) === 1,
-          Math.abs(lineIndex - row) === 1
-        ];
-
-        if (
-          ((conds[0] && lineIndex === row) || (conds[1] && colIndex === col)) &&
-          !(conds[0] && conds[1])
-        ) {
-          let memory = grid[row][col];
-          grid[row][col] = -1;
-          grid[lineIndex][colIndex] = memory;
-        }
-      }
-    });
+  return Object.assign({}, status, {
+    playing: false,
+    paused: true
   });
-  return grid;
 }
-function grid_shuffle(grid) {
-  var sizeLines = grid.length - 1;
-  var sizeCols = grid[0].length - 1;
 
-  var grid = grid.map(lines => lines.map(x => x));
-
-  for (let x = 0; x < grid.length; x++) {
-    for (let y = 0; y < grid[x].length; y++) {
-      let line = Math.ceil(Math.random() * sizeLines);
-      let col = Math.ceil(Math.random() * sizeCols);
-
-      let value = grid[line][col];
-      grid[line][col] = grid[x][y];
-      grid[x][y] = value;
-    }
-  }
-
-  return grid;
-}
+const ioStatus = {
+  save: status => localStorage.setItem("game-status", JSON.stringify(status)),
+  open: () => JSON.parse(localStorage.getItem("game-status"))
+};

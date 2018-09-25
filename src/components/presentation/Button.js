@@ -1,15 +1,9 @@
 import React from "react";
-import { connect } from "react-redux";
 
 const Button = props => {
   if (props.children != -1) {
     return (
-      <button
-        class={"btn btn-default btn-grid"}
-        onClick={props.onClick}
-        row={props.line}
-        col={props.col}
-      >
+      <button class={"btn btn-default btn-grid"} onClick={props.onClick}>
         {props.children}
       </button>
     );
