@@ -69,9 +69,14 @@ const dispatchToProps = (dispatch, ownProps) => {
   return {
     onButtonInit: props => {
       dispatch(!props.playing ? play(grid_shuffle(props.grid)) : reset());
+      ownProps.onButtonInit();
     },
     onButtonPause: props => {
-      dispatch(!props.paused ? pause() : resume());
+      if (!props.paused) {
+        props.onPause();
+      } else {
+        props.onResume();
+      }
     }
   };
 };

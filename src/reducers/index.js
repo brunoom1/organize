@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { MOVE, COUNT, PLAY, RESET, PAUSE, RESUME } from "./../actions";
+import { MOVE, COUNT, PLAY, RESET, PAUSE, RESUME, LOAD } from "./../actions";
 
 const defaultAppState = {
   grid: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, -1]],
@@ -39,7 +39,8 @@ const game = (status = defaultAppState.game, action) => {
       return Object.assign({}, status, {
         paused: false
       });
-
+    case LOAD:
+      return action.state.game;
     default:
       return status;
   }
@@ -64,6 +65,8 @@ const timer = (status = defaultAppState.timer, action) => {
       return Object.assign({}, status, {
         started: false
       });
+    case LOAD:
+      return action.state.timer;
     default:
       return status;
   }
@@ -77,23 +80,11 @@ const grid = (grid = defaultAppState.grid, action) => {
       return [...action.grid.map(cols => [...cols])];
     case RESET:
       return defaultAppState.grid;
+    case LOAD:
+      return action.state.grid;
     default:
       return grid;
   }
 };
 
 export default combineReducers({ grid, timer, game });
-
-function game_pause(status) {
-  ioStatus.save(status);
-
-  return Object.assign({}, status, {
-    playing: false,
-    paused: true
-  });
-}
-
-const ioStatus = {
-  save: status => localStorage.setItem("game-status", JSON.stringify(status)),
-  open: () => JSON.parse(localStorage.getItem("game-status"))
-};

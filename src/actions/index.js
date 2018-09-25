@@ -4,6 +4,14 @@ export const RESET = "RESET";
 export const COUNT = "COUNT";
 export const PAUSE = "PAUSE";
 export const RESUME = "RESUME";
+export const LOAD = "LOAD"; // carrega a aplicação no ínicio
+
+export let load = state => {
+  return {
+    type: LOAD,
+    state
+  };
+};
 
 export let move = grid => {
   return {
@@ -31,8 +39,9 @@ export let pause = () => {
   };
 };
 
-export let resume = () => {
-  return {
-    type: RESUME
-  };
+export let resume = state => {
+  return Object.assign({}, state, {
+    type: RESUME,
+    state
+  });
 };
