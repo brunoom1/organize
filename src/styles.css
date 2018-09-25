@@ -43,6 +43,10 @@ body {
   transition: background-color 1s, color 0.5s;
 }
 
+.game .btn.correct {
+  background-color: #5a8639;
+}
+
 .btn-empty {
   background-color: transparent !important;
   border: none !important;

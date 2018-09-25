@@ -13,7 +13,8 @@ import "./styles.css";
 
 let store = createStore(defaultReducer);
 store.subscribe(() => {
-  console.log(debugGrid.debugGrid(store.getState().grid));
+  console.log(store.getState().game);
+  console.log(store.getState().timer);
 });
 
 class App extends React.Component {
@@ -23,10 +24,11 @@ class App extends React.Component {
   render() {
     return (
       <Game
-        playing={store.getState().playing}
-        moviments={store.getState().moviments}
-        time={store.getState().time}
+        playing={store.getState().game.playing}
+        moviments={store.getState().game.moviments}
+        time={store.getState().timer.time}
         grid={store.getState().grid}
+        paused={store.getState().game.paused}
       />
     );
   }

@@ -3,7 +3,10 @@ import React from "react";
 const Button = props => {
   if (props.children != -1) {
     return (
-      <button class={"btn btn-default btn-grid"} onClick={props.onClick}>
+      <button
+        class={"btn btn-default btn-grid" + (props.correct ? " correct" : "")}
+        onClick={props.onClick}
+      >
         {props.children}
       </button>
     );

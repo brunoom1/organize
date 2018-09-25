@@ -7,15 +7,21 @@ import debugGrid from "./../../utils";
 
 let stateToProps = (state, ownProps) => {
   return {
-    grid: state.grid
+    grid: state.grid,
+    game: state.game
   };
 };
 
 let stateToDispatch = (dispatch, ownProps) => {
   return {
-    onButtonClick: (row, col) => {
-      let action = move(update_grid(ownProps.grid, row, col));
-      dispatch(action);
+    onButtonClick: (row, col, statusGame) => {
+      if (statusGame.playing && !statusGame.paused) {
+        let grid = update_grid(ownProps.grid, row, col);
+
+        if (grid !== ownProps.grid) {
+          dispatch(move(grid));
+        }
+      }
     }
   };
 };
@@ -29,6 +35,8 @@ export default connect(
 
 function update_grid(oldGrid, row, col) {
   let grid = oldGrid.map(x => (x instanceof Array ? x.map(i => i) : x));
+
+  let modified = false;
 
   grid.forEach((line, lineIndex) => {
     line.forEach((column, colIndex) => {
@@ -45,10 +53,11 @@ function update_grid(oldGrid, row, col) {
           let memory = grid[row][col];
           grid[row][col] = -1;
           grid[lineIndex][colIndex] = memory;
+          modified = true;
         }
       }
     });
   });
 
-  return grid;
+  return modified ? grid : oldGrid;
 }

@@ -13,8 +13,14 @@ export default props => {
               return (
                 <Col xs={12 / props.grid.length} sm={12 / props.grid.length}>
                   <Button
+                    correct={
+                      colIndex + 1 + lineIndex * props.grid.length ===
+                        parseInt(colValue) && props.game.playing
+                        ? true
+                        : false
+                    }
                     onClick={() => {
-                      props.onButtonClick(lineIndex, colIndex);
+                      props.onButtonClick(lineIndex, colIndex, props.game);
                     }}
                   >
                     {colValue}
@@ -28,24 +34,3 @@ export default props => {
     </div>
   );
 };
-
-// return (
-//   props.grid.map((line, lineIndex) => {
-//     return (
-//       <Row>
-//         {line.map((colValue, colIndex) => {
-//           return (
-//             <Col xs={12 / props.grid.length} sm={12 / props.grid.length}>
-//               <Button
-//                 onClick={() => {
-//                   props.onButtonClick({ lineIndex, colIndex });
-//                 }}
-//               >
-//                 {colValue}
-//               </Button>
-//             </Col>
-//           );
-//         })}
-//       </Row>
-//     );
-//   });

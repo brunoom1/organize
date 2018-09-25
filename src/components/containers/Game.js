@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { Grid, Row, Col, Badge } from "react-bootstrap";
-import { play, reset, PLAY, RESET } from "./../../actions";
+import { Grid, Row, Col } from "react-bootstrap";
+import { play, reset, pause, resume } from "./../../actions";
 
 import Display from "./../presentation/Display";
 import Button from "./../presentation/Button";
@@ -23,22 +23,30 @@ let game = props => {
             </p>
           </Col>
         </Row>
-        <Stage grid={props.grid} />
+        <Stage grid={props.grid} game={props.game} />
       </Grid>
       <Grid>
         <Row>
           <Col>
             <p />
           </Col>
-          <Col>
-            <Button
-              onClick={() =>
-                props.onButtonInit(
-                  !props.playing ? play(grid_shuffle(props.grid)) : reset()
-                )
-              }
-            >
-              {!props.playing ? "Play" : "Reset"}
+
+          {props.playing ? (
+            <Col sm={props.playing ? 6 : 12} xs={props.playing ? 6 : 12}>
+              <Button
+                onClick={() => {
+                  props.onButtonPause(props);
+                }}
+              >
+                {props.paused ? "Resume" : "Pause"}
+              </Button>
+            </Col>
+          ) : (
+            ""
+          )}
+          <Col sm={props.playing ? 6 : 12} xs={props.playing ? 6 : 12}>
+            <Button onClick={() => props.onButtonInit(props)}>
+              {!props.playing ? "Play" : "Stop"}
             </Button>
           </Col>
         </Row>
@@ -51,15 +59,19 @@ const stateToProps = (state, ownProps) => {
   return {
     playing: state.game.playing,
     moviments: state.game.moviments,
-    time: state.game.time,
+    paused: state.game.paused,
+    time: state.timer.time,
     grid: state.grid
   };
 };
 
 const dispatchToProps = (dispatch, ownProps) => {
   return {
-    onButtonInit: act => {
-      dispatch(act);
+    onButtonInit: props => {
+      dispatch(!props.playing ? play(grid_shuffle(props.grid)) : reset());
+    },
+    onButtonPause: props => {
+      dispatch(!props.paused ? pause() : resume());
     }
   };
 };

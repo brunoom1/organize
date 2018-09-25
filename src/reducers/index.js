@@ -1,13 +1,5 @@
 import { combineReducers } from "redux";
-import {
-  MOVE,
-  COUNT,
-  PLAY,
-  RESET,
-  TIMER_START,
-  TIMER_STOP,
-  PAUSE
-} from "./../actions";
+import { MOVE, COUNT, PLAY, RESET, PAUSE, RESUME } from "./../actions";
 
 const defaultAppState = {
   grid: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, -1]],
@@ -40,7 +32,13 @@ const game = (status = defaultAppState.game, action) => {
         playing: false
       });
     case PAUSE:
-      return game_pause(status);
+      return Object.assign({}, status, {
+        paused: true
+      });
+    case RESUME:
+      return Object.assign({}, status, {
+        paused: false
+      });
 
     default:
       return status;
@@ -63,28 +61,8 @@ const timer = (status = defaultAppState.timer, action) => {
         time: 0
       });
     case PAUSE:
-      if (status.processId) {
-        clearInterval(status.processId);
-      }
-      let objUpdated = Object.assign({}, status, {
-        started: false,
-        processId: null
-      });
-      return objUpdated;
-    case TIMER_START:
-      let processId = status.processId;
-      if (!processId) {
-        // processId = setInterval(action.timerFuncCount, 1000);
-      }
       return Object.assign({}, status, {
-        processId
-      });
-    case TIMER_STOP:
-      if (status.processId) {
-        clearInterval(status.processId);
-      }
-      return Object.assign({}, status, {
-        processId: null
+        started: false
       });
     default:
       return status;
