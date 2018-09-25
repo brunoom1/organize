@@ -6,9 +6,11 @@ import { play, reset, pause, resume } from "./../../actions";
 
 import Display from "./../presentation/Display";
 import Button from "./../presentation/Button";
+import Modal from "./../presentation/Modal";
 import Stage from "./Stage";
 
 let game = props => {
+  let containerNode = null;
   return (
     <div class="game">
       <Grid className={props.playing ? " playing" : " not-playing"}>
@@ -23,7 +25,13 @@ let game = props => {
             </p>
           </Col>
         </Row>
-        <Stage grid={props.grid} game={props.game} />
+        <Stage
+          grid={props.grid}
+          game={props.game}
+          ref={node => {
+            containerNode = node;
+          }}
+        />
       </Grid>
       <Grid>
         <Row>
@@ -51,6 +59,20 @@ let game = props => {
           </Col>
         </Row>
       </Grid>
+      <Modal show={props.paused} container={containerNode}>
+        <div className="text-center">
+          <strong> PAUSED </strong>
+          <br />
+          <br />
+          <Button
+            onClick={() => {
+              props.onButtonPause(props);
+            }}
+          >
+            {props.paused ? "Resume" : "Pause"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
