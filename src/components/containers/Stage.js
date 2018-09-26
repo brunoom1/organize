@@ -26,8 +26,6 @@ let stateToDispatch = (dispatch, ownProps) => {
   };
 };
 
-const StageContainer = props => {};
-
 export default connect(
   stateToProps,
   stateToDispatch

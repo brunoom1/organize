@@ -1,12 +1,20 @@
 import { combineReducers } from "redux";
-import { MOVE, COUNT, PLAY, RESET, PAUSE, RESUME, LOAD } from "./../actions";
+import {
+  MOVE,
+  COUNT,
+  PLAY,
+  RESET,
+  PAUSE,
+  RESUME,
+  LOAD,
+  START
+} from "./../actions";
 
 const defaultAppState = {
   grid: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, -1]],
   timer: {
     time: 0,
-    started: false,
-    processId: null
+    started: false
   },
   game: {
     moviments: 0,
@@ -52,9 +60,13 @@ const timer = (status = defaultAppState.timer, action) => {
       return Object.assign({}, status, {
         started: true
       });
+    case START:
+      return Object.assign({}, status, {
+        started: true
+      });
     case COUNT:
       return Object.assign({}, status, {
-        time: status.time + 1
+        time: action.value
       });
     case RESET:
       return Object.assign({}, status, {

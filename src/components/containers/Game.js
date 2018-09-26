@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { Grid, Row, Col } from "react-bootstrap";
-import { play, reset, pause, resume } from "./../../actions";
+import { play, reset, pause, resume, start } from "./../../actions";
 
 import Display from "./../presentation/Display";
 import Button from "./../presentation/Button";
@@ -90,7 +90,11 @@ const stateToProps = (state, ownProps) => {
 const dispatchToProps = (dispatch, ownProps) => {
   return {
     onButtonInit: props => {
-      dispatch(!props.playing ? play(grid_shuffle(props.grid)) : reset());
+      if (!props.playing) {
+        dispatch(play(grid_shuffle(props.grid)));
+      } else {
+        dispatch(reset());
+      }
       ownProps.onButtonInit();
     },
     onButtonPause: props => {

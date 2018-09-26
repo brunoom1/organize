@@ -1,31 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-
-import {
-  MOVE,
-  COUNT,
-  PLAY,
-  RESET,
-  SHUFFLE,
-  PAUSE,
-  pause,
-  load,
-  resume
-} from "./actions";
+import ReduxThunk from "redux-thunk";
+import { pause, load, resume, start } from "./actions";
 import defaultReducer from "./reducers";
 
 import Game from "./components/containers/Game";
-import Stage from "./components/containers/Stage";
-import debugGrid from "./utils";
 import "./styles.css";
 
-let store = createStore(defaultReducer);
+let store = createStore(defaultReducer, applyMiddleware(ReduxThunk));
+
 store.subscribe(() => {
   console.log(store.getState().game);
   console.log(store.getState().timer);
 });
+
+// dispara contador
+store.dispatch(start(store));
 
 class App extends React.Component {
   constructor(props) {
@@ -40,6 +32,7 @@ class App extends React.Component {
         time={store.getState().timer.time}
         grid={store.getState().grid}
         paused={store.getState().game.paused}
+        processId={store.getState().game.processId}
         onPause={() => {
           store.dispatch(pause());
           game_pause(store.getState());
