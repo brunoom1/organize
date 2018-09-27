@@ -6,6 +6,13 @@ export const PAUSE = "PAUSE";
 export const RESUME = "RESUME";
 export const LOAD = "LOAD"; // carrega a aplicação no ínicio
 export const START = "START";
+export const FINISHER = "FINISHER";
+
+export let finisher = () => {
+  return {
+    type: FINISHER
+  };
+};
 
 export let start = store => {
   return dispatch => {
@@ -25,7 +32,9 @@ export let start = store => {
         dispatch({
           type: COUNT,
           value:
-            !store.getState().game.paused && store.getState().game.playing
+            !store.getState().game.paused &&
+            !store.getState().finished &&
+            store.getState().game.playing
               ? store.getState().timer.time + 1
               : store.getState().timer.time
         });

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { move } from "./../../actions";
+import { move, finisher } from "./../../actions";
 import Stage from "./../presentation/Stage";
 import debugGrid from "./../../utils";
 
@@ -21,6 +21,10 @@ let stateToDispatch = (dispatch, ownProps) => {
         if (grid !== ownProps.grid) {
           dispatch(move(grid));
         }
+
+        if (finisher_verify(grid)) {
+          dispatch(finisher());
+        }
       }
     }
   };
@@ -30,6 +34,23 @@ export default connect(
   stateToProps,
   stateToDispatch
 )(Stage);
+
+function finisher_verify(grid) {
+  let previusValue = 0;
+  let ret = true;
+  grid.forEach(line =>
+    line.forEach(colValue => {
+      if (colValue !== -1) {
+        if (colValue > previusValue) {
+          previusValue = colValue;
+        } else {
+          ret = false;
+        }
+      }
+    })
+  );
+  return ret;
+}
 
 function update_grid(oldGrid, row, col) {
   let grid = oldGrid.map(x => (x instanceof Array ? x.map(i => i) : x));

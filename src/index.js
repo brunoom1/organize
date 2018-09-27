@@ -12,8 +12,7 @@ import "./styles.css";
 let store = createStore(defaultReducer, applyMiddleware(ReduxThunk));
 
 store.subscribe(() => {
-  console.log(store.getState().game);
-  console.log(store.getState().timer);
+  console.log(store.getState());
 });
 
 // dispara contador
