@@ -5,15 +5,14 @@ import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 import { pause, load, resume, start } from "./actions";
 import defaultReducer from "./reducers";
-
 import Game from "./components/containers/Game";
+
 import "./styles.css";
 
 let store = createStore(defaultReducer, applyMiddleware(ReduxThunk));
 
 store.subscribe(() => {
-  console.log(store.getState().game);
-  console.log(store.getState().timer);
+  console.log(store.getState());
 });
 
 // dispara contador
