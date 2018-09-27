@@ -1,18 +1,18 @@
 import React from "react";
 
 const Button = props => {
-  if (props.children != -1) {
-    return (
-      <button
-        class={"btn btn-default btn-grid" + (props.correct ? " correct" : "")}
-        onClick={props.onClick}
-      >
-        {props.children}
-      </button>
-    );
-  } else {
-    return <div className={"btn btn-default btn-empty"} />;
-  }
+  return (
+    <button
+      class={
+        "btn btn-default btn-grid" +
+        (props.correct ? " correct" : "") +
+        (props.children === -1 ? " inative" : "")
+      }
+      onClick={props.children !== -1 ? props.onClick : () => {}}
+    >
+      {props.children !== -1 ? props.children : ""}
+    </button>
+  );
 };
 
 export default Button;

@@ -40,11 +40,17 @@ body {
   outline: none;
   font-weight: bolder;
   text-shadow: #000 0px 0px 6px;
-  transition: background-color 1s, color 0.5s;
+  transition: background-color 0.3s, color 0.5s, visibility 1s;
 }
 
 .game .btn.correct {
   background-color: #5a8639;
+}
+
+.game .btn.inative {
+  background-color: #222;
+  visibility: hidden;
+  box-shadow: none;
 }
 
 .btn-empty {
