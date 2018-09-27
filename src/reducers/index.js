@@ -7,11 +7,21 @@ import {
   PAUSE,
   RESUME,
   LOAD,
-  START
+  START,
+  FINISHER
 } from "./../actions";
 
+const gridDefault = [
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9, 10, 11, 12],
+  [13, 14, 15, -1]
+];
+
+const gridTest = [[1, 2, 3], [4, 5, 6], [7, -1, 8]];
+
 const defaultAppState = {
-  grid: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, -1]],
+  grid: gridDefault,
   timer: {
     time: 0,
     started: false
@@ -99,4 +109,15 @@ const grid = (grid = defaultAppState.grid, action) => {
   }
 };
 
-export default combineReducers({ grid, timer, game });
+const finished = (state = false, action) => {
+  switch (action.type) {
+    case FINISHER:
+      return true;
+    case RESET:
+      return false;
+    default:
+      return state;
+  }
+};
+
+export default combineReducers({ grid, timer, game, finished });
