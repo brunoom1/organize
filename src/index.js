@@ -5,8 +5,8 @@ import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 import { pause, load, resume, start } from "./actions";
 import defaultReducer from "./reducers";
-
 import Game from "./components/containers/Game";
+
 import "./styles.css";
 
 let store = createStore(defaultReducer, applyMiddleware(ReduxThunk));
