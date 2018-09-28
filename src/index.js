@@ -6,7 +6,8 @@ import ReduxThunk from "redux-thunk";
 import { pause, load, resume, start } from "./actions";
 import defaultReducer from "./reducers";
 import Game from "./components/containers/Game";
-
+import { Row, Col } from "react-bootstrap";
+import Display from "./components/presentation/Display";
 import "./styles.css";
 
 let store = createStore(defaultReducer, applyMiddleware(ReduxThunk));
@@ -15,34 +16,36 @@ store.subscribe(() => {
   console.log(store.getState());
 });
 
-// dispara contador
-store.dispatch(start(store));
-
 class App extends React.Component {
   constructor(props) {
     super(props);
     store.dispatch(load(game_resume()));
   }
+
   render() {
+    let displayCountTime = null;
     return (
-      <Game
-        playing={store.getState().game.playing}
-        moviments={store.getState().game.moviments}
-        time={store.getState().timer.time}
-        grid={store.getState().grid}
-        paused={store.getState().game.paused}
-        processId={store.getState().game.processId}
-        onPause={() => {
-          store.dispatch(pause());
-          game_pause(store.getState());
-        }}
-        onResume={() => {
-          store.dispatch(resume(game_resume()));
-        }}
-        onButtonInit={() => {
-          game_clear();
-        }}
-      />
+      <div>
+        <Game
+          finished={store.getState().finished}
+          playing={store.getState().game.playing}
+          grid={store.getState().grid}
+          paused={store.getState().game.paused}
+          started={store.getState().timer.started}
+          moviments={store.getState().game.moviments}
+          time={store.getState().timer.time}
+          onPause={() => {
+            store.dispatch(pause());
+            game_pause(store.getState());
+          }}
+          onResume={() => {
+            store.dispatch(resume(game_resume()));
+          }}
+          onButtonInit={() => {
+            game_clear();
+          }}
+        />
+      </div>
     );
   }
 }
@@ -79,7 +82,7 @@ const ioStatus = {
 const rootElement = document.getElementById("root");
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <App started={store.getState().timer.started} />
   </Provider>,
   rootElement
 );

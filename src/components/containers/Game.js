@@ -2,88 +2,141 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { Grid, Row, Col } from "react-bootstrap";
-import { play, reset, pause, resume, start } from "./../../actions";
+import { play, reset, pause, resume, start, counter } from "./../../actions";
+
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  HelpBlock
+} from "react-bootstrap";
 
 import Display from "./../presentation/Display";
 import Button from "./../presentation/Button";
 import Modal from "./../presentation/Modal";
 import Stage from "./Stage";
 
-let game = props => {
-  let containerNode = null;
-  return (
-    <div class="game">
-      <Grid className={props.playing ? " playing" : " not-playing"}>
+class Game extends React.Component {
+  shouldComponentUpdate(props, state) {
+    if (this.props.time !== props.time) {
+      return false;
+    }
+    return true;
+  }
+
+  render() {
+    let containerNode = null;
+    return (
+      <div class="game">
         <Row>
           <Col>
-            <p>
-              <h1 className={"text-center"}> Organize </h1>
-            </p>
-            <p class="display">
-              <Display label="Moves" value={props.moviments} />
-              <Display label="Time" value={props.time} />
-            </p>
+            <div className="game">
+              <p>
+                <h1 className={"text-center"}> Organize </h1>
+              </p>
+              <p className="display">
+                <Display label="Moves" value={0} />
+                <Display
+                  label="Time"
+                  counter={true}
+                  started={this.props.started}
+                  value={this.props.time}
+                  onUpdate={val => {
+                    this.props.onCounterUpdate(val);
+                  }}
+                />
+              </p>
+            </div>
           </Col>
         </Row>
-        <Stage
-          grid={props.grid}
-          game={props.game}
-          ref={node => {
-            containerNode = node;
-          }}
-        />
-      </Grid>
-      <Grid>
-        <Row>
-          <Col>
-            <p />
-          </Col>
+        <Grid className={this.props.playing ? " playing" : " not-playing"}>
+          <Stage grid={this.props.grid} game={this.props.game} />
+        </Grid>
+        <Grid>
+          <Row>
+            <Col>
+              <p />
+            </Col>
 
-          {props.playing ? (
-            <Col sm={props.playing ? 6 : 12} xs={props.playing ? 6 : 12}>
-              <Button
-                onClick={() => {
-                  props.onButtonPause(props);
-                }}
+            {this.props.playing ? (
+              <Col
+                sm={this.props.playing ? 6 : 12}
+                xs={this.props.playing ? 6 : 12}
               >
-                {props.paused ? "Resume" : "Pause"}
+                <Button
+                  onClick={() => {
+                    this.props.onButtonPause(this.props);
+                  }}
+                >
+                  {this.props.paused ? "Resume" : "Pause"}
+                </Button>
+              </Col>
+            ) : (
+              ""
+            )}
+            <Col
+              sm={this.props.playing ? 6 : 12}
+              xs={this.props.playing ? 6 : 12}
+            >
+              <Button onClick={() => this.props.onButtonInit(this.props)}>
+                {!this.props.playing ? "Play" : "Stop"}
               </Button>
             </Col>
-          ) : (
-            ""
-          )}
-          <Col sm={props.playing ? 6 : 12} xs={props.playing ? 6 : 12}>
-            <Button onClick={() => props.onButtonInit(props)}>
-              {!props.playing ? "Play" : "Stop"}
+          </Row>
+        </Grid>
+
+        <Modal show={this.props.paused}>
+          <div className="text-center">
+            <strong> PAUSED </strong>
+            <br />
+            <br />
+
+            <Button
+              onClick={() => {
+                this.props.onButtonPause(this.props);
+              }}
+            >
+              {this.props.paused ? "Resume" : "Pause"}
             </Button>
-          </Col>
-        </Row>
-      </Grid>
-      <Modal show={props.paused} container={containerNode}>
-        <div className="text-center">
-          <strong> PAUSED </strong>
-          <br />
-          <br />
-          <Button
-            onClick={() => {
-              props.onButtonPause(props);
-            }}
-          >
-            {props.paused ? "Resume" : "Pause"}
-          </Button>
-        </div>
-      </Modal>
-    </div>
-  );
-};
+          </div>
+        </Modal>
+
+        <Modal show={this.props.finished}>
+          <div className="text-center">
+            <h1> Parabéns </h1>
+            <br />
+
+            <div>
+              <strong> Pontuação: </strong>
+              {Math.round((this.props.moviments / this.props.time) * 1000)}
+            </div>
+
+            <br />
+
+            <FormGroup controlId={"player-name"}>
+              <FormControl
+                type="text"
+                name="name"
+                placeholder="Deixe seu nome"
+              />
+            </FormGroup>
+
+            <Button> Salvar pontuação </Button>
+          </div>
+        </Modal>
+      </div>
+    );
+  }
+}
 
 const stateToProps = (state, ownProps) => {
   return {
     playing: state.game.playing,
-    moviments: state.game.moviments,
     paused: state.game.paused,
-    time: state.timer.time,
-    grid: state.grid
+    grid: state.grid,
+    started: state.timer.started,
+    moviments: state.game.moviments,
+    time: state.timer.time
   };
 };
 
@@ -103,6 +156,9 @@ const dispatchToProps = (dispatch, ownProps) => {
       } else {
         props.onResume();
       }
+    },
+    onCounterUpdate: val => {
+      dispatch(counter(val));
     }
   };
 };
@@ -130,4 +186,4 @@ function grid_shuffle(grid) {
 export default connect(
   stateToProps,
   dispatchToProps
-)(game);
+)(Game);

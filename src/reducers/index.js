@@ -18,7 +18,7 @@ const gridDefault = [
   [13, 14, 15, -1]
 ];
 
-const gridTest = [[1, 2, 3], [4, 5, 6], [7, -1, 8]];
+const gridTest = [[1, 2, 3], [4, 5, 6], [7, 8, -1]];
 
 const defaultAppState = {
   grid: gridDefault,
@@ -67,10 +67,7 @@ const game = (status = defaultAppState.game, action) => {
 const timer = (status = defaultAppState.timer, action) => {
   switch (action.type) {
     case PLAY:
-      return Object.assign({}, status, {
-        started: true
-      });
-    case START:
+    case RESUME:
       return Object.assign({}, status, {
         started: true
       });
@@ -109,7 +106,7 @@ const grid = (grid = defaultAppState.grid, action) => {
   }
 };
 
-const finished = (state = false, action) => {
+const finished = (state = defaultAppState.finished, action) => {
   switch (action.type) {
     case FINISHER:
       return true;
