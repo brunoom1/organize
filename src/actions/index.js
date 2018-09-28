@@ -8,40 +8,16 @@ export const LOAD = "LOAD"; // carrega a aplicação no ínicio
 export const START = "START";
 export const FINISHER = "FINISHER";
 
-export let finisher = () => {
+export let counter = value => {
   return {
-    type: FINISHER
+    type: COUNT,
+    value: value
   };
 };
 
-export let start = store => {
-  return dispatch => {
-    dispatch({
-      type: START
-    });
-
-    return new Promise(resolve => {
-      const CHAVE = "processid";
-      let id = localStorage.getItem(CHAVE);
-
-      if (id) {
-        clearInterval(id);
-      }
-
-      id = setInterval(() => {
-        dispatch({
-          type: COUNT,
-          value:
-            !store.getState().game.paused &&
-            !store.getState().finished &&
-            store.getState().game.playing
-              ? store.getState().timer.time + 1
-              : store.getState().timer.time
-        });
-        resolve();
-      }, 1000);
-      localStorage.setItem(CHAVE, id);
-    });
+export let finisher = () => {
+  return {
+    type: FINISHER
   };
 };
 
